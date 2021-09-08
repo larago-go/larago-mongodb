@@ -20,8 +20,6 @@
     <br />
     <a href="https://github.com/gin-gonic/gin">Gin framework</a>
     ·
-    <a href="https://gorm.io/docs/">ORM GORM</a>
-    ·
     <a href="https://docs.mongodb.com/manual/crud/">MongoDB Crud</a>
     ·
     <a href="https://github.com/casbin/casbin">Casbin Role</a>
@@ -57,7 +55,6 @@ Supports data bases mysql, postgres, sqlite, sqlserver and mongoDB. Session stor
 Under the hood:
 
 * Gin framework - heart of the project (route, middleware, html template and other) 
-* ORM GORM - the fantastic ORM library for Golang (Supports data bases mysql, postgres, sqlite, sqlserver and crud)
 * MongoDB - MongoDB (Supports data bases mongoDB and crud)
 * Casbin - An authorization library that supports access control models like ACL, RBAC, ABAC for Golang
 
@@ -90,16 +87,14 @@ npm run dev
 mv .env.example .env
 ```
 
-4. Сreate a database by default this is mysql(when creating use utf8mb4), you can change it by uncomplexing the necessary values in the files /config/Database.go and /config/CasbinRole.go
+4. configure the file .env
 
-5. configure the file .env
-
-6. inside your project run the command
+5. inside your project run the command
 ```sh
 go run main.go
 ```
 
-7. go to address
+6. go to address
 ```sh
 http://localhost:8080/
 ```
