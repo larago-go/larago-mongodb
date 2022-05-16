@@ -103,7 +103,7 @@ async created() {
 
   try {
   
-    await Connect.get("/users/api/list/" + this.$route.params.id)
+    await Connect.get("/users/api/list/" + this.$route.params.form.name)
             
       .then(response => { 
                 // JSON responses are automatically parsed.
@@ -148,7 +148,7 @@ async created() {
 
         Connect.defaults.headers.post['X-CSRF-Token'] = this.csrf;
        
-         await Connect.post("/users/list/" + this.$route.params.id + "/edit", this.form)
+         await Connect.post("/users/list/" + this.$route.params.form.name + "/edit", this.form)
                  
            .then(response => { 
                   
