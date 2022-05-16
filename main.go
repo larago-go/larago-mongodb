@@ -45,6 +45,10 @@ func main() {
 
 	r := gin.Default()
 
+	//Trusted_proxies
+	//r.SetTrustedProxies([]string{"192.168.1.2"})
+	//end_Trusted_proxies
+
 	//sessions
 
 	//sessions_cookie
@@ -90,10 +94,14 @@ func main() {
 
 	//gin_route_middleware
 
-	r.GET("/", Controllers.GetWelcome)
+	welcome := r.Group("/")
+	Controllers.Welcome(welcome.Group("/"))
 
 	auth := r.Group("/auth")
 	Controllers.Auth(auth.Group("/"))
+
+	res_pass := r.Group("/login")
+	Controllers.Res_pass(res_pass.Group("/"))
 
 	//Auth_Middleware
 	r.Use(Middleware.AuthMiddleware(true))

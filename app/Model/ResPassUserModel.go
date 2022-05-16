@@ -8,15 +8,13 @@ import (
 )
 
 //MongoDB
-type UserModel struct {
+type ResPassUserModel struct {
 	//primitive
 	//ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	ID       string `json:"id" bson:"_id,omitempty"`
-	Name     string `json:"name" bson:"name,omitempty"`
 	Email    string `json:"email" bson:"email,omitempty"`
-	Password string `json:"password" bson:"password,omitempty"`
-	//Casbinrole
-	Role string `json:"role" bson:"role,omitempty"`
+	Url      string `json:"url" bson:"url,omitempty"`
+	Url_full string `json:"url_full" bson:"url_full,omitempty"`
 }
 
-//end MongoDB
+//end_MongoDB
