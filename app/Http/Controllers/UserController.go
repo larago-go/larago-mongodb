@@ -14,6 +14,7 @@ import (
 	"github.com/joho/godotenv"
 	csrf "github.com/utrack/gin-csrf"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
@@ -29,15 +30,15 @@ type UsersValidation struct {
 func UsersRegister(router *gin.RouterGroup) {
 
 	router.POST("/post_add", UsersAddPost)
-	router.POST("/list/:name/edit", UpdateUsers)
-	router.GET("/list/:name/delete", DeleteUsers)
+	router.POST("/list/:id/edit", UpdateUsers)
+	router.GET("/list/:id/delete", DeleteUsers)
 	router.GET("/add", ViewAddUsers)
 	router.GET("/list", ViewUsersList)
-	router.GET("/list/:name", ViewUsersListPrev)
+	router.GET("/list/:id", ViewUsersListPrev)
 	router.GET("/api/list", ApiViewUsersList)
 	router.GET("/api/add", ApiViewAddUsers)
-	router.GET("/api/list/:name", ApiViewUsersListPrev)
-	router.GET("/api/list/:name/delete", ApiDeleteUsers)
+	router.GET("/api/list/:id", ApiViewUsersListPrev)
+	router.GET("/api/list/:id/delete", ApiDeleteUsers)
 
 }
 
@@ -163,7 +164,9 @@ func UpdateUsers(c *gin.Context) {
 
 		defer cancel()
 
-		filter := bson.M{"name": c.Param("name")}
+		objectid, input_id := primitive.ObjectIDFromHex(c.Param("id"))
+
+		filter := bson.M{"_id": objectid}
 
 		update := bson.D{
 
@@ -175,9 +178,9 @@ func UpdateUsers(c *gin.Context) {
 			}},
 		}
 
-		_, err := collection.UpdateOne(ctx, filter, update)
+		_, input_id = collection.UpdateOne(ctx, filter, update)
 
-		if err != nil {
+		if input_id != nil {
 
 			c.JSON(http.StatusBadRequest, gin.H{
 
@@ -208,7 +211,9 @@ func UpdateUsers(c *gin.Context) {
 
 		defer cancel()
 
-		filter := bson.M{"name": c.Param("name")}
+		objectid, input_id := primitive.ObjectIDFromHex(c.Param("id"))
+
+		filter := bson.M{"_id": objectid}
 
 		update := bson.D{
 
@@ -219,9 +224,9 @@ func UpdateUsers(c *gin.Context) {
 			}},
 		}
 
-		_, err := collection.UpdateOne(ctx, filter, update)
+		_, input_id = collection.UpdateOne(ctx, filter, update)
 
-		if err != nil {
+		if input_id != nil {
 
 			c.JSON(http.StatusBadRequest, gin.H{
 
@@ -268,11 +273,13 @@ func DeleteUsers(c *gin.Context) {
 
 	defer cancel()
 
-	filter := bson.M{"name": c.Param("name")}
+	objectid, input := primitive.ObjectIDFromHex(c.Param("id"))
 
-	_, err := collection.DeleteMany(ctx, filter)
+	filter := bson.M{"_id": objectid}
 
-	if err != nil {
+	_, input = collection.DeleteMany(ctx, filter)
+
+	if input != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 
@@ -420,12 +427,14 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 
 	defer cancel()
 
-	filter := bson.M{"name": c.Param("name")}
+	objectid, input := primitive.ObjectIDFromHex(c.Param("id"))
 
-	res := collection.FindOne(ctx, filter).Decode(&model)
+	filter := bson.M{"_id": objectid}
+
+	input = collection.FindOne(ctx, filter).Decode(&model)
 	//errmongo := collection.Find(filter)
 
-	if res != nil {
+	if input != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 
@@ -690,11 +699,13 @@ func ApiDeleteUsers(c *gin.Context) {
 
 	defer cancel()
 
-	filter := bson.M{"name": c.Param("name")}
+	objectid, input := primitive.ObjectIDFromHex(c.Param("id"))
 
-	_, err := collection.DeleteMany(ctx, filter)
+	filter := bson.M{"_id": objectid}
 
-	if err != nil {
+	_, input = collection.DeleteMany(ctx, filter)
+
+	if input != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 

@@ -40,17 +40,17 @@
                 <tbody>
                   <tr v-for="list in lists" :key="list" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                      {{ list.RoleName }}
+                      {{ list.v0 }}
                     </th> 
                     <td class="px-6 py-4">
-                      {{ list.Path }}
+                      {{ list.v1 }}
                     </td>
                     <td class="px-6 py-4">
-                      {{ list.Method }}
+                      {{ list.v2 }}
                     </td>
                     <td class="px-6 py-4 text-right">
 
-              <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="deleteId(list.RoleName)">Delete</button>
+              <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="deleteId(list.id)">Delete</button>
                     </td>
                 </tr>
               </tbody>

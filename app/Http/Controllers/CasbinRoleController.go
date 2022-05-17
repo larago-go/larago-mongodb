@@ -14,6 +14,7 @@ import (
 	"github.com/joho/godotenv"
 	csrf "github.com/utrack/gin-csrf"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -27,12 +28,12 @@ type CasbinRoleAddValidation struct {
 func CasbinRole(router *gin.RouterGroup) {
 
 	router.POST("/post_add", AddPostCasbinRole)
-	router.GET("/list/:v0/delete", DeleteCasbinRole)
+	router.GET("/list/:id/delete", DeleteCasbinRole)
 	router.GET("/list", ViewCasbinRole)
 	router.GET("/add", AddCasbinRole)
 	router.GET("/api/add", ApiAddCasbinRole)
 	router.GET("/api/list", ApiViewCasbinRole)
-	router.GET("/api/list/:v0/delete", ApiDeleteCasbinRole)
+	router.GET("/api/list/:id/delete", ApiDeleteCasbinRole)
 
 }
 
@@ -83,7 +84,7 @@ func AddPostCasbinRole(c *gin.Context) {
 	}
 	opt := options.Index()
 
-	opt.SetUnique(true)
+	opt.SetUnique(false)
 
 	index := mongo.IndexModel{Keys: bson.M{"v0": 1}, Options: opt}
 
@@ -275,11 +276,13 @@ func DeleteCasbinRole(c *gin.Context) {
 
 	defer cancel()
 
-	filter := bson.M{"v0": c.Param("v0")}
+	objectid, input := primitive.ObjectIDFromHex(c.Param("id"))
 
-	res := collection.FindOne(ctx, filter).Decode(&model)
+	filter := bson.M{"_id": objectid}
 
-	if res != nil {
+	input = collection.FindOne(ctx, filter).Decode(&model)
+
+	if input != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 
@@ -436,11 +439,13 @@ func ApiDeleteCasbinRole(c *gin.Context) {
 
 	defer cancel()
 
-	filter := bson.M{"v0": c.Param("v0")}
+	objectid, input := primitive.ObjectIDFromHex(c.Param("id"))
 
-	res := collection.FindOne(ctx, filter).Decode(&model)
+	filter := bson.M{"_id": objectid}
 
-	if res != nil {
+	input = collection.FindOne(ctx, filter).Decode(&model)
+
+	if input != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 

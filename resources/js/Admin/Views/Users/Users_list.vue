@@ -43,20 +43,20 @@
                 <tbody>
                   <tr v-for="list in lists" :key="list" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                      {{ list.Name }}
+                      {{ list.name }}
                     </th> 
                     <td class="px-6 py-4">
-                      {{ list.Email }}
+                      {{ list.email }}
                     </td>
                     <td class="px-6 py-4">
-                      {{ list.Role }}
+                      {{ list.role }}
                     </td>
                     <td class="px-6 py-4 text-right">
-                      <router-link class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" :to="{ name: 'users_list_prev', params: { id: list.Name }}">Edit</router-link>
+                      <router-link class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" :to="{ name: 'users_list_prev', params: { id: list.id }}">Edit</router-link>
                     </td>
                     <td class="px-6 py-4 text-right">
 
-              <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="deleteId(list.Name)">Delete</button>
+              <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="deleteId(list.id)">Delete</button>
                     </td>
                 </tr>
               </tbody>

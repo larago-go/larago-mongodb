@@ -62,7 +62,7 @@ const routes =  [
   },
   
   {
-    path: "/users/list/:name",
+    path: "/users/list/:id",
     name: "users_list_prev",
     component: () => import("./Admin/Views/Users/Users_list_prev")
   },
