@@ -655,12 +655,14 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 
 	defer cancel()
 
-	filter := bson.M{"name": c.Param("name")}
+	objectid, input := primitive.ObjectIDFromHex(c.Param("id"))
 
-	res := collection.FindOne(ctx, filter).Decode(&model)
+	filter := bson.M{"_id": objectid}
+
+	input = collection.FindOne(ctx, filter).Decode(&model)
 	//errmongo := collection.Find(filter)
 
-	if res != nil {
+	if input != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 
