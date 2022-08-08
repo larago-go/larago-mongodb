@@ -38,6 +38,9 @@
 * [License](#license)
 * [Contact](#contact)
 
+<!-- Architecture -->
+## Architecture
+![Architecture][product-arch]
 
 
 <!-- ABOUT THE PROJECT -->
@@ -118,3 +121,4 @@ Author Link: [https://github.com/GuzhavinAleksey](https://github.com/GuzhavinAle
 <!-- IMAGES -->
 
 [product-screenshot]: larago_git.png
+[product-arch]: larago-ach.jpg
