@@ -310,13 +310,6 @@ func ViewUsersList(c *gin.Context) {
 
 	}
 
-	//MongoDB
-	filter := bson.M{}
-
-	//// Here's an array in which you can store the decoded documents
-	var model []*Model.UserModel
-
-	// Passing nil as the filter matches all documents in the collection
 	//env
 	env := godotenv.Load()
 
@@ -325,48 +318,6 @@ func ViewUsersList(c *gin.Context) {
 		panic("Error loading .env file")
 
 	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
-
-	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-
-	defer cancel()
-
-	cur, err := collection.Find(ctx, filter)
-
-	if err != nil {
-
-		log.Fatal(err)
-
-	}
-
-	// Finding multiple documents returns a cursor
-	// Iterating through the cursor allows us to decode documents one at a time
-	for cur.Next(ctx) {
-
-		// create a value into which the single document can be decoded
-		var elem Model.UserModel
-
-		err := cur.Decode(&elem)
-
-		if err != nil {
-
-			log.Fatal(err)
-		}
-
-		model = append(model, &elem)
-
-	}
-
-	if err := cur.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	// Close the cursor once finished
-	cur.Close(ctx)
-	//end MongoDB
 
 	template := os.Getenv("TEMPLATE")
 
@@ -378,6 +329,56 @@ func ViewUsersList(c *gin.Context) {
 		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
 
 	case template == "html":
+
+		//MongoDB
+		filter := bson.M{}
+
+		//// Here's an array in which you can store the decoded documents
+		var model []*Model.UserModel
+
+		// Passing nil as the filter matches all documents in the collection
+
+		DB_DATABASE := os.Getenv("DB_DATABASE")
+
+		collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+		defer cancel()
+
+		cur, err := collection.Find(ctx, filter)
+
+		if err != nil {
+
+			log.Fatal(err)
+
+		}
+
+		// Finding multiple documents returns a cursor
+		// Iterating through the cursor allows us to decode documents one at a time
+		for cur.Next(ctx) {
+
+			// create a value into which the single document can be decoded
+			var elem Model.UserModel
+
+			err := cur.Decode(&elem)
+
+			if err != nil {
+
+				log.Fatal(err)
+			}
+
+			model = append(model, &elem)
+
+		}
+
+		if err := cur.Err(); err != nil {
+			log.Fatal(err)
+		}
+
+		// Close the cursor once finished
+		cur.Close(ctx)
+		//end MongoDB
 
 		//HTML template
 		c.HTML(http.StatusOK, "admin_views_users_list.html", gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName, "list": model})
