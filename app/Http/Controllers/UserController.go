@@ -326,7 +326,7 @@ func ViewUsersList(c *gin.Context) {
 	case template == "vue":
 
 		//VUE template
-		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
 	case template == "html":
 
@@ -386,7 +386,7 @@ func ViewUsersList(c *gin.Context) {
 	default:
 
 		//VUE template
-		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
 	}
 
@@ -453,7 +453,7 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	case template == "vue":
 
 		//VUE template
-		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
 	case template == "html":
 
@@ -464,7 +464,7 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	default:
 
 		//VUE template
-		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
 	}
 
@@ -503,7 +503,7 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	case template == "vue":
 
 		//VUE template
-		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
 	case template == "html":
 
@@ -513,7 +513,7 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	default:
 
 		//VUE template
-		c.HTML(http.StatusOK, "index_vue.html", gin.H{"title": "Larago"})
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
 	}
 
