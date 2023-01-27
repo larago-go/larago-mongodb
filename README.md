@@ -65,7 +65,7 @@ Under the hood:
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
+you need Golang 1.19,
 To get a local copy up and running follow these simple steps.
 
 
@@ -83,7 +83,7 @@ npm install
 ```
 and
 ```sh
-npm run dev
+npm run build
 ```
 3. Rename the file .env.example
 ```sh
@@ -94,6 +94,7 @@ mv .env.example .env
 
 5. inside your project run the command
 ```sh
+go mod tidy | if necessary 
 go run main.go
 ```
 
