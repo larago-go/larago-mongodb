@@ -6,12 +6,10 @@ import (
 	"larago/config"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	csrf "github.com/utrack/gin-csrf"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -56,15 +54,7 @@ func AddPostCasbinRole(c *gin.Context) {
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
 
@@ -122,15 +112,8 @@ func ViewCasbinRole(c *gin.Context) {
 	}
 
 	//env
-	env := godotenv.Load()
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	template := os.Getenv("TEMPLATE")
+	template := config.EnvFunc("TEMPLATE")
 
 	switch {
 
@@ -150,7 +133,7 @@ func ViewCasbinRole(c *gin.Context) {
 
 		//  // Passing nil as the filter matches all documents in the collection
 
-		DB_DATABASE := os.Getenv("DB_DATABASE")
+		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 		collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
 
@@ -222,16 +205,8 @@ func AddCasbinRole(c *gin.Context) {
 	}
 
 	//env
-	env := godotenv.Load()
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-	//end_env
-
-	template := os.Getenv("TEMPLATE")
+	template := config.EnvFunc("TEMPLATE")
 
 	switch {
 
@@ -262,15 +237,7 @@ func DeleteCasbinRole(c *gin.Context) {
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
 
@@ -336,17 +303,10 @@ func ApiViewCasbinRole(c *gin.Context) {
 	//  // Here's an array in which you can store the decoded documents
 	var model []*Model.CasbinRoleModel
 
-	//  // Passing nil as the filter matches all documents in the collection
-	//   //env
-	env := godotenv.Load()
+	// Passing nil as the filter matches all documents in the collection
+	//env
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
 
@@ -425,15 +385,7 @@ func ApiDeleteCasbinRole(c *gin.Context) {
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
 

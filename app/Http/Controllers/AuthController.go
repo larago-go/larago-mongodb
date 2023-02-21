@@ -6,12 +6,10 @@ import (
 	"larago/config"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	csrf "github.com/utrack/gin-csrf"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -69,15 +67,8 @@ func UsersRegistration(c *gin.Context) {
 	//MongoDB
 
 	//env
-	env := godotenv.Load()
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -142,15 +133,7 @@ func UsersLogin(c *gin.Context) {
 
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -248,16 +231,8 @@ func ViewUsersLogin(c *gin.Context) {
 		//c.HTML(http.StatusOK, "login.html", gin.H{"csrf": csrf.GetToken(c)})
 
 		//env
-		env := godotenv.Load()
 
-		if env != nil {
-
-			panic("Error loading .env file")
-
-		}
-		//end_env
-
-		template := os.Getenv("TEMPLATE")
+		template := config.EnvFunc("TEMPLATE")
 
 		switch {
 
@@ -302,16 +277,8 @@ func ViewUsersRegistration(c *gin.Context) {
 		//c.HTML(http.StatusOK, "login.html", gin.H{"csrf": csrf.GetToken(c)})
 
 		//env
-		env := godotenv.Load()
 
-		if env != nil {
-
-			panic("Error loading .env file")
-
-		}
-		//end_env
-
-		template := os.Getenv("TEMPLATE")
+		template := config.EnvFunc("TEMPLATE")
 
 		switch {
 

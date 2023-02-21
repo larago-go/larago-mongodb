@@ -6,12 +6,10 @@ import (
 	"larago/config"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	csrf "github.com/utrack/gin-csrf"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -65,17 +63,8 @@ func UsersAddPost(c *gin.Context) {
 	user := Model.UserModel{Name: input.Name, Role: input.Role, Email: input.Email, Password: input.Password}
 
 	//MongoDB
-	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -149,15 +138,7 @@ func UpdateUsers(c *gin.Context) {
 		//MongoDB
 		//env
 
-		env := godotenv.Load()
-
-		if env != nil {
-
-			panic("Error loading .env file")
-
-		}
-
-		DB_DATABASE := os.Getenv("DB_DATABASE")
+		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 		collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -196,15 +177,7 @@ func UpdateUsers(c *gin.Context) {
 		//MongoDB
 		//env
 
-		env := godotenv.Load()
-
-		if env != nil {
-
-			panic("Error loading .env file")
-
-		}
-
-		DB_DATABASE := os.Getenv("DB_DATABASE")
+		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 		collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -258,15 +231,7 @@ func DeleteUsers(c *gin.Context) {
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -312,15 +277,8 @@ func ViewUsersList(c *gin.Context) {
 	}
 
 	//env
-	env := godotenv.Load()
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	template := os.Getenv("TEMPLATE")
+	template := config.EnvFunc("TEMPLATE")
 
 	switch {
 
@@ -339,7 +297,7 @@ func ViewUsersList(c *gin.Context) {
 
 		// Passing nil as the filter matches all documents in the collection
 
-		DB_DATABASE := os.Getenv("DB_DATABASE")
+		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 		collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -413,15 +371,7 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -447,7 +397,7 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 
 	//end MongoDB
 
-	template := os.Getenv("TEMPLATE")
+	template := config.EnvFunc("TEMPLATE")
 
 	switch {
 
@@ -488,16 +438,8 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	}
 
 	//env
-	env := godotenv.Load()
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-	//end_env
-
-	template := os.Getenv("TEMPLATE")
+	template := config.EnvFunc("TEMPLATE")
 
 	switch {
 
@@ -545,15 +487,8 @@ func ApiViewUsersList(c *gin.Context) {
 
 	// Passing nil as the filter matches all documents in the collection
 	//env
-	env := godotenv.Load()
 
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -641,15 +576,7 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
@@ -687,15 +614,7 @@ func ApiDeleteUsers(c *gin.Context) {
 	//MongoDB
 	//env
 
-	env := godotenv.Load()
-
-	if env != nil {
-
-		panic("Error loading .env file")
-
-	}
-
-	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
 
