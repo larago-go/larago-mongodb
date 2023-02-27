@@ -60,7 +60,12 @@ func UsersAddPost(c *gin.Context) {
 	input.Password = string(passwordHash)
 
 	// Create user
-	user := Model.UserModel{Name: input.Name, Role: input.Role, Email: input.Email, Password: input.Password}
+	user := Model.UserModel{
+		Name:     input.Name,
+		Role:     input.Role,
+		Email:    input.Email,
+		Password: input.Password,
+	}
 
 	//MongoDB
 
@@ -409,8 +414,15 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	case template == "html":
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_views_users_list_prev.html", gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName, "id": model.ID, "name": model.Name,
-			"email": model.Email, "role": model.Role})
+		c.HTML(http.StatusOK, "admin_views_users_list_prev.html", gin.H{
+			"csrf":         csrf.GetToken(c),
+			"session_id":   sessionID,
+			"session_name": sessionName,
+			"id":           model.ID,
+			"name":         model.Name,
+			"email":        model.Email,
+			"role":         model.Role,
+		})
 
 	default:
 
@@ -603,8 +615,15 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 	//end MongoDB
 
 	//c.JSON(http.StatusOK, gin.H{"data": model })
-	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName, "id": model.ID, "name": model.Name,
-		"email": model.Email, "role": model.Role})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"csrf":         csrf.GetToken(c),
+		"session_id":   sessionID,
+		"session_name": sessionName,
+		"id":           model.ID,
+		"name":         model.Name,
+		"email":        model.Email,
+		"role":         model.Role,
+	})
 
 }
 
