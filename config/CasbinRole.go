@@ -12,6 +12,7 @@ func CasbinRole() *casbin.Enforcer {
 
 	//env
 	errenv := godotenv.Load()
+
 	if errenv != nil {
 		panic("Error loading .env file")
 	}
@@ -27,6 +28,7 @@ func CasbinRole() *casbin.Enforcer {
 	if errcasbindb != nil {
 		panic("Failed to connect to database!")
 	}
+
 	e, errcasbin := casbin.NewEnforcer("config/Casbin_role_model.conf", a)
 
 	if errcasbin != nil {

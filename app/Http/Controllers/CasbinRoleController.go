@@ -71,13 +71,11 @@ func AddPostCasbinRole(c *gin.Context) {
 	_, err_post := collection.InsertOne(ctx, role)
 
 	if err_post != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "A role with the same name already exists",
 		})
-
 	}
+
 	opt := options.Index()
 
 	opt.SetUnique(false)
@@ -87,23 +85,18 @@ func AddPostCasbinRole(c *gin.Context) {
 		Options: opt}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
-
 		log.Println("Could not create index:", err)
-
 	}
 	//end MongoDB
 
 	headerContentTtype := c.Request.Header.Get("Content-Type")
 
 	if headerContentTtype != "application/json" {
-
 		c.Redirect(http.StatusFound, "/role/list")
-
 	} else {
-
 		c.IndentedJSON(http.StatusCreated, role)
-
 	}
+
 }
 
 func ViewCasbinRole(c *gin.Context) {
@@ -111,11 +104,10 @@ func ViewCasbinRole(c *gin.Context) {
 	session := sessions.Default(c)
 	sessionID := session.Get("user_id")
 	sessionName := session.Get("user_name")
-	if sessionID == nil {
 
+	if sessionID == nil {
 		c.Redirect(http.StatusFound, "/auth/login")
 		c.Abort()
-
 	}
 
 	//env
@@ -123,44 +115,28 @@ func ViewCasbinRole(c *gin.Context) {
 	template := config.EnvFunc("TEMPLATE")
 
 	switch {
-
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//MongoDB
-
 		filter := bson.M{}
-
 		var model []*Model.CasbinRoleModel
-
 		DB_DATABASE := config.EnvFunc("DB_DATABASE")
-
 		collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
-
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-
 		defer cancel()
-
 		cur, err := collection.Find(ctx, filter)
 
 		if err != nil {
-
 			log.Fatal(err)
-
 		}
 
 		for cur.Next(ctx) {
-
 			var elem Model.CasbinRoleModel
-
 			err := cur.Decode(&elem)
 
 			if err != nil {
-
 				log.Fatal(err)
 			}
 
@@ -169,14 +145,10 @@ func ViewCasbinRole(c *gin.Context) {
 		}
 
 		if err := cur.Err(); err != nil {
-
 			log.Fatal(err)
-
 		}
 
 		cur.Close(ctx)
-
-		//end MongoDB
 
 		//HTML template
 		c.HTML(http.StatusOK, "admin_views_casbin_role.html", gin.H{
@@ -185,7 +157,6 @@ func ViewCasbinRole(c *gin.Context) {
 			"list":         model})
 
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
@@ -198,8 +169,8 @@ func AddCasbinRole(c *gin.Context) {
 	session := sessions.Default(c)
 	sessionID := session.Get("user_id")
 	sessionName := session.Get("user_name")
-	if sessionID == nil {
 
+	if sessionID == nil {
 		c.Redirect(http.StatusFound, "/auth/login")
 		c.Abort()
 	}
@@ -211,12 +182,9 @@ func AddCasbinRole(c *gin.Context) {
 	switch {
 
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//HTML template
 		c.HTML(http.StatusOK, "admin_views_casbin_role_add.html", gin.H{
 			"csrf":         csrf.GetToken(c),
@@ -224,10 +192,8 @@ func AddCasbinRole(c *gin.Context) {
 			"session_name": sessionName})
 
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	}
 
 }
@@ -254,12 +220,9 @@ func DeleteCasbinRole(c *gin.Context) {
 	input = collection.FindOne(ctx, filter).Decode(&model)
 
 	if input != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
 
 	e := config.CasbinRole()
@@ -272,13 +235,10 @@ func DeleteCasbinRole(c *gin.Context) {
 	_, err := collection.DeleteMany(ctx, filter)
 
 	if err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
 	}
-	//end MongoDB
 
 	c.Redirect(http.StatusFound, "/role/list")
 }
@@ -290,11 +250,8 @@ func ApiViewCasbinRole(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
-
 		c.Abort()
-
 	}
 
 	//MongoDB
@@ -316,9 +273,7 @@ func ApiViewCasbinRole(c *gin.Context) {
 	cur, err := collection.Find(ctx, filter)
 
 	if err != nil {
-
 		log.Fatal(err)
-
 	}
 
 	for cur.Next(ctx) {
@@ -328,7 +283,6 @@ func ApiViewCasbinRole(c *gin.Context) {
 		err := cur.Decode(&elem)
 
 		if err != nil {
-
 			log.Fatal(err)
 		}
 
@@ -337,14 +291,10 @@ func ApiViewCasbinRole(c *gin.Context) {
 	}
 
 	if err := cur.Err(); err != nil {
-
 		log.Fatal(err)
-
 	}
 
 	cur.Close(ctx)
-
-	//end MongoDB
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"csrf":         csrf.GetToken(c),
@@ -361,11 +311,8 @@ func ApiAddCasbinRole(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
-
 		c.Abort()
-
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{
@@ -380,8 +327,6 @@ func ApiDeleteCasbinRole(c *gin.Context) {
 	var model Model.CasbinRoleModel
 
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("casbinrolemodels")
@@ -397,28 +342,25 @@ func ApiDeleteCasbinRole(c *gin.Context) {
 	input = collection.FindOne(ctx, filter).Decode(&model)
 
 	if input != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
 
 	e := config.CasbinRole()
 
-	e.RemovePolicy(model.RoleName, model.Path, model.Method)
+	e.RemovePolicy(
+		model.RoleName,
+		model.Path,
+		model.Method)
 
 	_, err := collection.DeleteMany(ctx, filter)
 
 	if err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
 	}
-	//end MongoDB
 
 	c.IndentedJSON(http.StatusOK, gin.H{"data": true})
 }

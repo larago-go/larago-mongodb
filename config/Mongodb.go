@@ -18,6 +18,7 @@ var MongoClient *mongo.Client
 func Init_Mongo() {
 
 	errenv := godotenv.Load()
+
 	if errenv != nil {
 		panic("Error loading .env file")
 	}
@@ -30,18 +31,21 @@ func Init_Mongo() {
 	uri := "mongodb://" + DB_USERNAME + ":" + DB_PASSWORD + "@" + DB_HOST + ":" + DB_PORT
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Create connect
 	err = client.Connect(context.TODO())
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Check the connection
 	err = client.Ping(context.TODO(), nil)
+
 	if err != nil {
 		log.Fatal(err)
 	}

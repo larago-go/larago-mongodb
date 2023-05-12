@@ -46,11 +46,8 @@ func UsersAddPost(c *gin.Context) {
 	var input UsersValidation
 
 	if err := c.ShouldBind(&input); err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
 
 	bytePassword := []byte(input.Password)
@@ -80,12 +77,9 @@ func UsersAddPost(c *gin.Context) {
 	_, err_post := collection.InsertOne(ctx, user)
 
 	if err_post != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "A user with the same name already exists",
 		})
-
 	}
 
 	opt := options.Index()
@@ -97,9 +91,7 @@ func UsersAddPost(c *gin.Context) {
 		Options: opt}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
-
 		log.Println("Could not create index:", err)
-
 	}
 
 	//end MongoDB
@@ -107,13 +99,9 @@ func UsersAddPost(c *gin.Context) {
 	headerContentTtype := c.Request.Header.Get("Content-Type")
 
 	if headerContentTtype != "application/json" {
-
 		c.Redirect(http.StatusFound, "/users/list")
-
 	} else {
-
 		c.IndentedJSON(http.StatusCreated, user)
-
 	}
 
 }
@@ -124,11 +112,8 @@ func UpdateUsers(c *gin.Context) {
 	var input UsersValidation
 
 	if err := c.ShouldBind(&input); err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
 
 	if len(input.Password) > 0 {
@@ -138,9 +123,7 @@ func UpdateUsers(c *gin.Context) {
 		passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 
 		input.Password = string(passwordHash)
-
 		//MongoDB
-		//env
 
 		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
@@ -170,20 +153,14 @@ func UpdateUsers(c *gin.Context) {
 			update)
 
 		if input_id != nil {
-
 			c.JSON(http.StatusBadRequest, gin.H{
-
 				"msg": "err collections find one",
 			})
-
 		}
-		//end MongoDB
 
 	} else {
 
 		//MongoDB
-		//env
-
 		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 		collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -211,26 +188,19 @@ func UpdateUsers(c *gin.Context) {
 			update)
 
 		if input_id != nil {
-
 			c.JSON(http.StatusBadRequest, gin.H{
-
 				"msg": "err collections find one",
 			})
 		}
-		//end MongoDB
 
 	}
 
 	headerContentTtype := c.Request.Header.Get("Content-Type")
 
 	if headerContentTtype != "application/json" {
-
 		c.Redirect(http.StatusFound, "/users/list")
-
 	} else {
-
 		c.IndentedJSON(http.StatusOK, "ok")
-
 	}
 
 }
@@ -238,8 +208,6 @@ func UpdateUsers(c *gin.Context) {
 func DeleteUsers(c *gin.Context) {
 
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -255,14 +223,10 @@ func DeleteUsers(c *gin.Context) {
 	_, input = collection.DeleteMany(ctx, filter)
 
 	if input != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
-	//end MongoDB
 
 	c.Redirect(http.StatusFound, "/users/list")
 }
@@ -274,11 +238,8 @@ func ViewUsersList(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.Redirect(http.StatusFound, "/auth/login")
-
 		c.Abort()
-
 	}
 
 	//env
@@ -286,14 +247,10 @@ func ViewUsersList(c *gin.Context) {
 	template := config.EnvFunc("TEMPLATE")
 
 	switch {
-
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//MongoDB
 		filter := bson.M{}
 
@@ -310,9 +267,7 @@ func ViewUsersList(c *gin.Context) {
 		cur, err := collection.Find(ctx, filter)
 
 		if err != nil {
-
 			log.Fatal(err)
-
 		}
 
 		for cur.Next(ctx) {
@@ -322,7 +277,6 @@ func ViewUsersList(c *gin.Context) {
 			err := cur.Decode(&elem)
 
 			if err != nil {
-
 				log.Fatal(err)
 			}
 
@@ -335,7 +289,6 @@ func ViewUsersList(c *gin.Context) {
 		}
 
 		cur.Close(ctx)
-		//end MongoDB
 
 		//HTML template
 		c.HTML(http.StatusOK, "admin_views_users_list.html", gin.H{
@@ -345,7 +298,6 @@ func ViewUsersList(c *gin.Context) {
 			"list":         model})
 
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
@@ -362,14 +314,10 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.Redirect(http.StatusFound, "/auth/login")
-
 		c.Abort()
 	}
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -385,27 +333,18 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	input = collection.FindOne(ctx, filter).Decode(&model)
 
 	if input != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
-
-	//end MongoDB
 
 	template := config.EnvFunc("TEMPLATE")
 
 	switch {
-
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//HTML template
 		c.HTML(http.StatusOK, "admin_views_users_list_prev.html", gin.H{
 			"csrf":         csrf.GetToken(c),
@@ -416,12 +355,9 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 			"email":        model.Email,
 			"role":         model.Role,
 		})
-
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	}
 
 }
@@ -433,11 +369,8 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.Redirect(http.StatusFound, "/auth/login")
-
 		c.Abort()
-
 	}
 
 	//env
@@ -445,22 +378,16 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	template := config.EnvFunc("TEMPLATE")
 
 	switch {
-
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//HTML template
 		c.HTML(http.StatusOK, "admin_views_users_add.html", gin.H{
 			"csrf":         csrf.GetToken(c),
 			"session_id":   sessionID,
 			"session_name": sessionName})
-
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
 
@@ -475,11 +402,8 @@ func ApiViewUsersList(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
-
 		c.Abort()
-
 	}
 
 	//MongoDB
@@ -488,7 +412,6 @@ func ApiViewUsersList(c *gin.Context) {
 	var model []*Model.UserModel
 
 	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -500,9 +423,7 @@ func ApiViewUsersList(c *gin.Context) {
 	cur, err := collection.Find(ctx, filter)
 
 	if err != nil {
-
 		log.Fatal(err)
-
 	}
 
 	for cur.Next(ctx) {
@@ -512,7 +433,6 @@ func ApiViewUsersList(c *gin.Context) {
 		err := cur.Decode(&elem)
 
 		if err != nil {
-
 			log.Fatal(err)
 		}
 
@@ -525,7 +445,6 @@ func ApiViewUsersList(c *gin.Context) {
 	}
 
 	cur.Close(ctx)
-	//end MongoDB
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"csrf":         csrf.GetToken(c),
@@ -542,11 +461,8 @@ func ApiViewAddUsers(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
-
 		c.Abort()
-
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{
@@ -565,14 +481,10 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
-
 		c.Abort()
 	}
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -588,12 +500,9 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 	input = collection.FindOne(ctx, filter).Decode(&model)
 
 	if input != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
 
 	//end MongoDB
@@ -613,8 +522,6 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 func ApiDeleteUsers(c *gin.Context) {
 
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -630,14 +537,10 @@ func ApiDeleteUsers(c *gin.Context) {
 	_, input = collection.DeleteMany(ctx, filter)
 
 	if input != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
-	//end MongoDB
 
 	c.IndentedJSON(http.StatusOK, gin.H{"data": true})
 }

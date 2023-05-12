@@ -48,8 +48,6 @@ func PostForgotPassword(c *gin.Context) {
 	var model Model.UserModel
 
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection_users := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -63,12 +61,9 @@ func PostForgotPassword(c *gin.Context) {
 	decode := collection_users.FindOne(ctx_users, filter_users).Decode(&model)
 
 	if decode != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
 
 	rand_urls := config.RandomString(90)
@@ -86,10 +81,12 @@ func PostForgotPassword(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+
 	mail_encryption, err := strconv.ParseBool(config.EnvFunc("MAIL_ENCRYPTION"))
 	if err != nil {
 		panic(err)
 	}
+
 	d := gomail.NewDialer(
 		config.EnvFunc("MAIL_HOST"),
 		mail_port,
@@ -119,12 +116,9 @@ func PostForgotPassword(c *gin.Context) {
 	_, err_post := collection_respass.InsertOne(ctx_url, url_res)
 
 	if err_post != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "A user with the same name already exists",
 		})
-
 	}
 
 	opt := options.Index()
@@ -134,21 +128,15 @@ func PostForgotPassword(c *gin.Context) {
 	index := mongo.IndexModel{Keys: bson.M{"url": 1}, Options: opt}
 
 	if _, err_index := collection_respass.Indexes().CreateOne(ctx_url, index); err_index != nil {
-
 		log.Println("Could not create index:", err_index)
-
 	}
 
 	headerContentTtype := c.Request.Header.Get("Content-Type")
 
 	if headerContentTtype != "application/json" {
-
 		c.Redirect(http.StatusFound, "/")
-
 	} else {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"data": true})
-
 	}
 
 	//remove link password recovery after 30 minutes
@@ -166,12 +154,9 @@ func PostForgotPassword(c *gin.Context) {
 		_, err_respass_del := collection_respass_del.DeleteMany(ctx_respass, filter_respass_del)
 
 		if err_respass_del != nil {
-
 			c.JSON(http.StatusBadRequest, gin.H{
-
 				"msg": "err collections find one",
 			})
-
 		}
 
 	})
@@ -182,8 +167,6 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	var model Model.ResPassUserModel
 
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection := config.MongoClient.Database(DB_DATABASE).Collection("usermodels")
@@ -197,12 +180,9 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	res := collection.FindOne(ctx, filter).Decode(&model)
 
 	if res != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
 
 	//end MongoDB
@@ -210,24 +190,17 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	template := config.EnvFunc("TEMPLATE")
 
 	switch {
-
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//HTML template
 		c.HTML(http.StatusOK, "admin_auth_forgot_password_new.html", gin.H{
 			"csrf": csrf.GetToken(c),
 			"url":  model.Url})
-
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	}
 
 }
@@ -237,8 +210,6 @@ func ViewRes_passListPost(c *gin.Context) {
 	var model Model.ResPassUserModel
 
 	//MongoDB
-	//env
-
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
 	collection_respass := config.MongoClient.Database(DB_DATABASE).Collection("respassusermodels")
@@ -252,15 +223,10 @@ func ViewRes_passListPost(c *gin.Context) {
 	decode_respass := collection_respass.FindOne(ctx_respass, filter_respass).Decode(&model)
 
 	if decode_respass != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
-
-	//end MongoDB
 
 	var input Res_passPasswordValidation
 
@@ -296,53 +262,36 @@ func ViewRes_passListPost(c *gin.Context) {
 		update_users)
 
 	if err_users != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
-	//end MongoDB
-
-	//c.JSON(http.StatusOK, gin.H{"data": model })
 
 	headerContentTtype := c.Request.Header.Get("Content-Type")
 
 	if headerContentTtype != "application/json" {
-
 		c.Redirect(http.StatusFound, "/auth/login")
-
 	} else {
-
 		c.IndentedJSON(http.StatusOK, gin.H{"data": true})
-
 	}
+
 }
 
 func ViewForgotPassword(c *gin.Context) { // Get model if exist
 
 	//env
-
 	template := config.EnvFunc("TEMPLATE")
 
 	switch {
-
 	case template == "vue":
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	case template == "html":
-
 		//HTML template
 		c.HTML(http.StatusOK, "admin_auth_forgot_password.html", gin.H{"csrf": csrf.GetToken(c)})
-
 	default:
-
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
-
 	}
 
 }
@@ -350,6 +299,7 @@ func ViewForgotPassword(c *gin.Context) { // Get model if exist
 func ApiViewForgotPassword(c *gin.Context) { // Get model if exist
 
 	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c)})
+
 }
 
 func ApiViewRes_passListPrev(c *gin.Context) { // Get model if exist
@@ -373,12 +323,9 @@ func ApiViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	//errmongo := collection.Find(filter)
 
 	if res != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{
-
 			"msg": "err collections find one",
 		})
-
 	}
 
 	//end MongoDB

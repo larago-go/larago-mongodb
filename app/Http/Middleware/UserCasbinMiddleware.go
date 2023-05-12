@@ -10,18 +10,17 @@ import (
 
 func AuthCasbinMiddleware(bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		session := sessions.Default(c)
 		sessionID := session.Get("user_id")
 		//Casbinrole
 		e := config.CasbinRole()
 
 		if sessionID == nil {
-			//c.JSON(http.StatusForbidden, gin.H{
-			//	"message": "not authed",
-			//})
 			c.Redirect(http.StatusFound, "/auth/login")
 			c.Abort()
 		}
+
 		sub := session.Get("user_role")
 		obj := c.Request.URL.Path
 		act := c.Request.Method
@@ -36,6 +35,7 @@ func AuthCasbinMiddleware(bool) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
 		if res {
 			c.Next()
 		} else {
