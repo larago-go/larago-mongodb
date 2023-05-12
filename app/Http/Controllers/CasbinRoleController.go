@@ -46,10 +46,16 @@ func AddPostCasbinRole(c *gin.Context) {
 
 	e := config.CasbinRole()
 
-	e.AddPolicy(input.RoleName, input.Path, input.Method)
+	e.AddPolicy(
+		input.RoleName,
+		input.Path,
+		input.Method)
 
 	// Create role
-	role := Model.CasbinRoleModel{RoleName: input.RoleName, Path: input.Path, Method: input.Method}
+	role := Model.CasbinRoleModel{
+		RoleName: input.RoleName,
+		Path:     input.Path,
+		Method:   input.Method}
 
 	//MongoDB
 	//env
@@ -76,7 +82,9 @@ func AddPostCasbinRole(c *gin.Context) {
 
 	opt.SetUnique(false)
 
-	index := mongo.IndexModel{Keys: bson.M{"v0": 1}, Options: opt}
+	index := mongo.IndexModel{
+		Keys:    bson.M{"v0": 1},
+		Options: opt}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
 
@@ -104,11 +112,10 @@ func ViewCasbinRole(c *gin.Context) {
 	sessionID := session.Get("user_id")
 	sessionName := session.Get("user_name")
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
+
 		c.Redirect(http.StatusFound, "/auth/login")
 		c.Abort()
+
 	}
 
 	//env
@@ -128,10 +135,7 @@ func ViewCasbinRole(c *gin.Context) {
 
 		filter := bson.M{}
 
-		//  // Here's an array in which you can store the decoded documents
 		var model []*Model.CasbinRoleModel
-
-		//  // Passing nil as the filter matches all documents in the collection
 
 		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
@@ -149,11 +153,8 @@ func ViewCasbinRole(c *gin.Context) {
 
 		}
 
-		//  // Finding multiple documents returns a cursor
-		//  // Iterating through the cursor allows us to decode documents one at a time
 		for cur.Next(ctx) {
 
-			//    // create a value into which the single document can be decoded
 			var elem Model.CasbinRoleModel
 
 			err := cur.Decode(&elem)
@@ -173,14 +174,15 @@ func ViewCasbinRole(c *gin.Context) {
 
 		}
 
-		//  // Close the cursor once finished
-
 		cur.Close(ctx)
 
 		//end MongoDB
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_views_casbin_role.html", gin.H{"session_id": sessionID, "session_name": sessionName, "list": model})
+		c.HTML(http.StatusOK, "admin_views_casbin_role.html", gin.H{
+			"session_id":   sessionID,
+			"session_name": sessionName,
+			"list":         model})
 
 	default:
 
@@ -197,9 +199,7 @@ func AddCasbinRole(c *gin.Context) {
 	sessionID := session.Get("user_id")
 	sessionName := session.Get("user_name")
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
+
 		c.Redirect(http.StatusFound, "/auth/login")
 		c.Abort()
 	}
@@ -218,7 +218,10 @@ func AddCasbinRole(c *gin.Context) {
 	case template == "html":
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_views_casbin_role_add.html", gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName})
+		c.HTML(http.StatusOK, "admin_views_casbin_role_add.html", gin.H{
+			"csrf":         csrf.GetToken(c),
+			"session_id":   sessionID,
+			"session_name": sessionName})
 
 	default:
 
@@ -230,7 +233,6 @@ func AddCasbinRole(c *gin.Context) {
 }
 
 func DeleteCasbinRole(c *gin.Context) {
-	// Get model if exist
 
 	var model Model.CasbinRoleModel
 
@@ -262,7 +264,10 @@ func DeleteCasbinRole(c *gin.Context) {
 
 	e := config.CasbinRole()
 
-	e.RemovePolicy(model.RoleName, model.Path, model.Method)
+	e.RemovePolicy(
+		model.RoleName,
+		model.Path,
+		model.Method)
 
 	_, err := collection.DeleteMany(ctx, filter)
 
@@ -275,7 +280,6 @@ func DeleteCasbinRole(c *gin.Context) {
 	}
 	//end MongoDB
 
-	//c.JSON(http.StatusOK, gin.H{"data": true})
 	c.Redirect(http.StatusFound, "/role/list")
 }
 
@@ -286,9 +290,6 @@ func ApiViewCasbinRole(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
 
@@ -300,10 +301,8 @@ func ApiViewCasbinRole(c *gin.Context) {
 
 	filter := bson.M{}
 
-	//  // Here's an array in which you can store the decoded documents
 	var model []*Model.CasbinRoleModel
 
-	// Passing nil as the filter matches all documents in the collection
 	//env
 
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
@@ -322,11 +321,8 @@ func ApiViewCasbinRole(c *gin.Context) {
 
 	}
 
-	//  // Finding multiple documents returns a cursor
-	//  // Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(ctx) {
 
-		//    // create a value into which the single document can be decoded
 		var elem Model.CasbinRoleModel
 
 		err := cur.Decode(&elem)
@@ -346,12 +342,15 @@ func ApiViewCasbinRole(c *gin.Context) {
 
 	}
 
-	//  // Close the cursor once finished
 	cur.Close(ctx)
 
 	//end MongoDB
 
-	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName, "list": model})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"csrf":         csrf.GetToken(c),
+		"session_id":   sessionID,
+		"session_name": sessionName,
+		"list":         model})
 
 }
 
@@ -362,9 +361,6 @@ func ApiAddCasbinRole(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
 
@@ -372,13 +368,14 @@ func ApiAddCasbinRole(c *gin.Context) {
 
 	}
 
-	//c.JSON(http.StatusOK, gin.H{"data": model})
-	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"csrf":         csrf.GetToken(c),
+		"session_id":   sessionID,
+		"session_name": sessionName})
 
 }
 
 func ApiDeleteCasbinRole(c *gin.Context) {
-	// Get model if exist
 
 	var model Model.CasbinRoleModel
 

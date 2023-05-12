@@ -23,9 +23,7 @@ func ViewHome(c *gin.Context) {
 	sessionID := session.Get("user_id")
 	sessionName := session.Get("user_name")
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
+
 		c.Redirect(http.StatusFound, "/auth/login")
 		c.Abort()
 	}
@@ -44,7 +42,9 @@ func ViewHome(c *gin.Context) {
 	case template == "html":
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_views_home.html", gin.H{"session_id": sessionID, "session_name": sessionName})
+		c.HTML(http.StatusOK, "admin_views_home.html", gin.H{
+			"session_id":   sessionID,
+			"session_name": sessionName})
 	default:
 
 		//VUE template
@@ -60,16 +60,16 @@ func ApiViewHome(c *gin.Context) {
 	sessionID := session.Get("user_id")
 	sessionName := session.Get("user_name")
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
+
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
 
 		c.Abort()
 
 	}
 
-	//c.JSON(http.StatusOK, gin.H{"data": model})
-	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"csrf":         csrf.GetToken(c),
+		"session_id":   sessionID,
+		"session_name": sessionName})
 
 }

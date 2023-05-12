@@ -54,7 +54,7 @@ func UsersAddPost(c *gin.Context) {
 	}
 
 	bytePassword := []byte(input.Password)
-	// Make sure the second param `bcrypt generator cost` between [4, 32)
+
 	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 
 	input.Password = string(passwordHash)
@@ -92,7 +92,9 @@ func UsersAddPost(c *gin.Context) {
 
 	opt.SetUnique(true)
 
-	index := mongo.IndexModel{Keys: bson.M{"name": 1}, Options: opt}
+	index := mongo.IndexModel{
+		Keys:    bson.M{"name": 1},
+		Options: opt}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
 
@@ -101,8 +103,6 @@ func UsersAddPost(c *gin.Context) {
 	}
 
 	//end MongoDB
-
-	//c.JSON(http.StatusOK, gin.H{"data": user})
 
 	headerContentTtype := c.Request.Header.Get("Content-Type")
 
@@ -119,7 +119,6 @@ func UsersAddPost(c *gin.Context) {
 }
 
 func UpdateUsers(c *gin.Context) {
-	// Get model if exist
 
 	// Validate input
 	var input UsersValidation
@@ -135,7 +134,7 @@ func UpdateUsers(c *gin.Context) {
 	if len(input.Password) > 0 {
 
 		bytePassword := []byte(input.Password)
-		// Make sure the second param `bcrypt generator cost` between [4, 32)
+
 		passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 
 		input.Password = string(passwordHash)
@@ -165,7 +164,10 @@ func UpdateUsers(c *gin.Context) {
 			}},
 		}
 
-		_, input_id = collection.UpdateOne(ctx, filter, update)
+		_, input_id = collection.UpdateOne(
+			ctx,
+			filter,
+			update)
 
 		if input_id != nil {
 
@@ -203,7 +205,10 @@ func UpdateUsers(c *gin.Context) {
 			}},
 		}
 
-		_, input_id = collection.UpdateOne(ctx, filter, update)
+		_, input_id = collection.UpdateOne(
+			ctx,
+			filter,
+			update)
 
 		if input_id != nil {
 
@@ -231,7 +236,6 @@ func UpdateUsers(c *gin.Context) {
 }
 
 func DeleteUsers(c *gin.Context) {
-	// Get model if exist
 
 	//MongoDB
 	//env
@@ -260,7 +264,6 @@ func DeleteUsers(c *gin.Context) {
 	}
 	//end MongoDB
 
-	//c.JSON(http.StatusOK, gin.H{"data": true})
 	c.Redirect(http.StatusFound, "/users/list")
 }
 
@@ -272,9 +275,6 @@ func ViewUsersList(c *gin.Context) {
 
 	if sessionID == nil {
 
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 		c.Redirect(http.StatusFound, "/auth/login")
 
 		c.Abort()
@@ -297,10 +297,7 @@ func ViewUsersList(c *gin.Context) {
 		//MongoDB
 		filter := bson.M{}
 
-		//// Here's an array in which you can store the decoded documents
 		var model []*Model.UserModel
-
-		// Passing nil as the filter matches all documents in the collection
 
 		DB_DATABASE := config.EnvFunc("DB_DATABASE")
 
@@ -318,11 +315,8 @@ func ViewUsersList(c *gin.Context) {
 
 		}
 
-		// Finding multiple documents returns a cursor
-		// Iterating through the cursor allows us to decode documents one at a time
 		for cur.Next(ctx) {
 
-			// create a value into which the single document can be decoded
 			var elem Model.UserModel
 
 			err := cur.Decode(&elem)
@@ -340,12 +334,15 @@ func ViewUsersList(c *gin.Context) {
 			log.Fatal(err)
 		}
 
-		// Close the cursor once finished
 		cur.Close(ctx)
 		//end MongoDB
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_views_users_list.html", gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName, "list": model})
+		c.HTML(http.StatusOK, "admin_views_users_list.html", gin.H{
+			"csrf":         csrf.GetToken(c),
+			"session_id":   sessionID,
+			"session_name": sessionName,
+			"list":         model})
 
 	default:
 
@@ -365,9 +362,6 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 
 		c.Redirect(http.StatusFound, "/auth/login")
 
@@ -389,7 +383,6 @@ func ViewUsersListPrev(c *gin.Context) { // Get model if exist
 	filter := bson.M{"_id": objectid}
 
 	input = collection.FindOne(ctx, filter).Decode(&model)
-	//errmongo := collection.Find(filter)
 
 	if input != nil {
 
@@ -440,9 +433,7 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
+
 		c.Redirect(http.StatusFound, "/auth/login")
 
 		c.Abort()
@@ -463,7 +454,10 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 	case template == "html":
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_views_users_add.html", gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName})
+		c.HTML(http.StatusOK, "admin_views_users_add.html", gin.H{
+			"csrf":         csrf.GetToken(c),
+			"session_id":   sessionID,
+			"session_name": sessionName})
 
 	default:
 
@@ -481,9 +475,6 @@ func ApiViewUsersList(c *gin.Context) {
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
 
@@ -494,10 +485,8 @@ func ApiViewUsersList(c *gin.Context) {
 	//MongoDB
 	filter := bson.M{}
 
-	//// Here's an array in which you can store the decoded documents
 	var model []*Model.UserModel
 
-	// Passing nil as the filter matches all documents in the collection
 	//env
 
 	DB_DATABASE := config.EnvFunc("DB_DATABASE")
@@ -516,11 +505,8 @@ func ApiViewUsersList(c *gin.Context) {
 
 	}
 
-	// Finding multiple documents returns a cursor
-	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(ctx) {
 
-		// create a value into which the single document can be decoded
 		var elem Model.UserModel
 
 		err := cur.Decode(&elem)
@@ -538,11 +524,14 @@ func ApiViewUsersList(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	// Close the cursor once finished
 	cur.Close(ctx)
 	//end MongoDB
 
-	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName, "list": model})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"csrf":         csrf.GetToken(c),
+		"session_id":   sessionID,
+		"session_name": sessionName,
+		"list":         model})
 
 }
 
@@ -553,9 +542,6 @@ func ApiViewAddUsers(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
 
@@ -563,8 +549,10 @@ func ApiViewAddUsers(c *gin.Context) { // Get model if exist
 
 	}
 
-	//c.JSON(http.StatusOK, gin.H{"data": model})
-	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "session_id": sessionID, "session_name": sessionName})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"csrf":         csrf.GetToken(c),
+		"session_id":   sessionID,
+		"session_name": sessionName})
 
 }
 
@@ -577,9 +565,6 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 	sessionName := session.Get("user_name")
 
 	if sessionID == nil {
-		//c.JSON(http.StatusForbidden, gin.H{
-		//	"message": "not authed",
-		//})
 
 		c.IndentedJSON(http.StatusOK, gin.H{"csrf": "redirect_auth_login"})
 
@@ -601,7 +586,6 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 	filter := bson.M{"_id": objectid}
 
 	input = collection.FindOne(ctx, filter).Decode(&model)
-	//errmongo := collection.Find(filter)
 
 	if input != nil {
 
@@ -614,7 +598,6 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 
 	//end MongoDB
 
-	//c.JSON(http.StatusOK, gin.H{"data": model })
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"csrf":         csrf.GetToken(c),
 		"session_id":   sessionID,
@@ -628,7 +611,6 @@ func ApiViewUsersListPrev(c *gin.Context) { // Get model if exist
 }
 
 func ApiDeleteUsers(c *gin.Context) {
-	// Get model if exist
 
 	//MongoDB
 	//env

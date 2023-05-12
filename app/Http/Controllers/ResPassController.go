@@ -90,9 +90,11 @@ func PostForgotPassword(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	d := gomail.NewDialer(config.EnvFunc("MAIL_HOST"), mail_port, config.EnvFunc("MAIL_USERNAME"), config.EnvFunc("MAIL_PASSWORD")) // E: undeclared name: gomail
-
-	//  d := gomail.NewPlainDialer("smtp.example.com", 587, "smtp_username", "smtp_password")
+	d := gomail.NewDialer(
+		config.EnvFunc("MAIL_HOST"),
+		mail_port,
+		config.EnvFunc("MAIL_USERNAME"),
+		config.EnvFunc("MAIL_PASSWORD"))
 
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: mail_encryption}
 
@@ -103,7 +105,10 @@ func PostForgotPassword(c *gin.Context) {
 
 	//Gorm_SQL
 
-	url_res := Model.ResPassUserModel{Email: input.Email, Url_full: config.EnvFunc("WWWROOT") + "/login/pass/" + rand_urls, Url: rand_urls}
+	url_res := Model.ResPassUserModel{
+		Email:    input.Email,
+		Url_full: config.EnvFunc("WWWROOT") + "/login/pass/" + rand_urls,
+		Url:      rand_urls}
 
 	collection_respass := config.MongoClient.Database(DB_DATABASE).Collection("respassusermodels")
 
@@ -190,7 +195,6 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	filter := bson.M{"url": c.Param("url")}
 
 	res := collection.FindOne(ctx, filter).Decode(&model)
-	//errmongo := collection.Find(filter)
 
 	if res != nil {
 
@@ -215,7 +219,9 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	case template == "html":
 
 		//HTML template
-		c.HTML(http.StatusOK, "admin_auth_forgot_password_new.html", gin.H{"csrf": csrf.GetToken(c), "url": model.Url})
+		c.HTML(http.StatusOK, "admin_auth_forgot_password_new.html", gin.H{
+			"csrf": csrf.GetToken(c),
+			"url":  model.Url})
 
 	default:
 
@@ -226,7 +232,7 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 
 }
 
-func ViewRes_passListPost(c *gin.Context) { // Get model if exist
+func ViewRes_passListPost(c *gin.Context) {
 
 	var model Model.ResPassUserModel
 
@@ -264,7 +270,7 @@ func ViewRes_passListPost(c *gin.Context) { // Get model if exist
 	}
 
 	bytePassword := []byte(input.Password)
-	// Make sure the second param `bcrypt generator cost` between [4, 32)
+
 	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 
 	input.Password = string(passwordHash)
@@ -284,7 +290,10 @@ func ViewRes_passListPost(c *gin.Context) { // Get model if exist
 		}},
 	}
 
-	_, err_users := collection_users.UpdateOne(ctx_users, filter_users, update_users)
+	_, err_users := collection_users.UpdateOne(
+		ctx_users,
+		filter_users,
+		update_users)
 
 	if err_users != nil {
 
@@ -373,6 +382,5 @@ func ApiViewRes_passListPrev(c *gin.Context) { // Get model if exist
 	}
 
 	//end MongoDB
-	//c.JSON(http.StatusOK, gin.H{"data": model })
 	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "url": model.Url})
 }
