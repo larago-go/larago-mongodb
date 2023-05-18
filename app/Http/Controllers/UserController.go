@@ -88,7 +88,8 @@ func UsersAddPost(c *gin.Context) {
 
 	index := mongo.IndexModel{
 		Keys:    bson.M{"name": 1},
-		Options: opt}
+		Options: opt,
+	}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
 		log.Println("Could not create index:", err)
@@ -138,7 +139,6 @@ func UpdateUsers(c *gin.Context) {
 		filter := bson.M{"_id": objectid}
 
 		update := bson.D{
-
 			{"$set", bson.D{
 				{"name", input.Name},
 				{"email", input.Email},
@@ -150,7 +150,8 @@ func UpdateUsers(c *gin.Context) {
 		_, input_id = collection.UpdateOne(
 			ctx,
 			filter,
-			update)
+			update,
+		)
 
 		if input_id != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -174,7 +175,6 @@ func UpdateUsers(c *gin.Context) {
 		filter := bson.M{"_id": objectid}
 
 		update := bson.D{
-
 			{"$set", bson.D{
 				{"name", input.Name},
 				{"email", input.Email},
@@ -185,7 +185,8 @@ func UpdateUsers(c *gin.Context) {
 		_, input_id = collection.UpdateOne(
 			ctx,
 			filter,
-			update)
+			update,
+		)
 
 		if input_id != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -295,7 +296,8 @@ func ViewUsersList(c *gin.Context) {
 			"csrf":         csrf.GetToken(c),
 			"session_id":   sessionID,
 			"session_name": sessionName,
-			"list":         model})
+			"list":         model,
+		})
 
 	default:
 		//VUE template
@@ -386,7 +388,8 @@ func ViewAddUsers(c *gin.Context) { // Get model if exist
 		c.HTML(http.StatusOK, "admin_views_users_add.html", gin.H{
 			"csrf":         csrf.GetToken(c),
 			"session_id":   sessionID,
-			"session_name": sessionName})
+			"session_name": sessionName,
+		})
 	default:
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
@@ -450,7 +453,8 @@ func ApiViewUsersList(c *gin.Context) {
 		"csrf":         csrf.GetToken(c),
 		"session_id":   sessionID,
 		"session_name": sessionName,
-		"list":         model})
+		"list":         model,
+	})
 
 }
 
@@ -468,7 +472,8 @@ func ApiViewAddUsers(c *gin.Context) { // Get model if exist
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"csrf":         csrf.GetToken(c),
 		"session_id":   sessionID,
-		"session_name": sessionName})
+		"session_name": sessionName,
+	})
 
 }
 

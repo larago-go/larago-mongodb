@@ -61,7 +61,8 @@ func UsersRegistration(c *gin.Context) {
 	user := Model.UserModel{
 		Name:     input.Name,
 		Email:    input.Email,
-		Password: input.Password}
+		Password: input.Password,
+	}
 
 	//MongoDB
 
@@ -89,7 +90,8 @@ func UsersRegistration(c *gin.Context) {
 
 	index := mongo.IndexModel{
 		Keys:    bson.M{"name": 1},
-		Options: opt}
+		Options: opt,
+	}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
 		log.Println("Could not create index:", err)
@@ -170,7 +172,8 @@ func UsersLogin(c *gin.Context) {
 			c.IndentedJSON(http.StatusCreated, gin.H{
 				"message": "User signed in",
 				"user":    model.Name,
-				"id":      model.ID})
+				"id":      model.ID,
+			})
 		}
 	}
 
@@ -286,11 +289,13 @@ func ViewUserSession(c *gin.Context) {
 	if sessionID == nil {
 		c.IndentedJSON(http.StatusOK, gin.H{
 			"userid_session_id": "no_auth",
-			"userid_session":    "no_auth"})
+			"userid_session":    "no_auth",
+		})
 	} else {
 		c.IndentedJSON(http.StatusOK, gin.H{
 			"userid_session_id": sessionID,
-			"userid_session":    "auth"})
+			"userid_session":    "auth",
+		})
 	}
 
 }

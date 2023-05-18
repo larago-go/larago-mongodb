@@ -105,7 +105,8 @@ func PostForgotPassword(c *gin.Context) {
 	url_res := Model.ResPassUserModel{
 		Email:    input.Email,
 		Url_full: config.EnvFunc("WWWROOT") + "/login/pass/" + rand_urls,
-		Url:      rand_urls}
+		Url:      rand_urls,
+	}
 
 	collection_respass := config.MongoClient.Database(DB_DATABASE).Collection("respassusermodels")
 
@@ -197,7 +198,8 @@ func ViewRes_passListPrev(c *gin.Context) { // Get model if exist
 		//HTML template
 		c.HTML(http.StatusOK, "admin_auth_forgot_password_new.html", gin.H{
 			"csrf": csrf.GetToken(c),
-			"url":  model.Url})
+			"url":  model.Url,
+		})
 	default:
 		//VUE template
 		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Larago"})
@@ -250,7 +252,6 @@ func ViewRes_passListPost(c *gin.Context) {
 	filter_users := bson.M{"email": model.Email}
 
 	update_users := bson.D{
-
 		{"$set", bson.D{
 			{"password", input.Password},
 		}},
@@ -259,7 +260,8 @@ func ViewRes_passListPost(c *gin.Context) {
 	_, err_users := collection_users.UpdateOne(
 		ctx_users,
 		filter_users,
-		update_users)
+		update_users,
+	)
 
 	if err_users != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

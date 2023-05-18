@@ -49,13 +49,15 @@ func AddPostCasbinRole(c *gin.Context) {
 	e.AddPolicy(
 		input.RoleName,
 		input.Path,
-		input.Method)
+		input.Method,
+	)
 
 	// Create role
 	role := Model.CasbinRoleModel{
 		RoleName: input.RoleName,
 		Path:     input.Path,
-		Method:   input.Method}
+		Method:   input.Method,
+	}
 
 	//MongoDB
 	//env
@@ -82,7 +84,8 @@ func AddPostCasbinRole(c *gin.Context) {
 
 	index := mongo.IndexModel{
 		Keys:    bson.M{"v0": 1},
-		Options: opt}
+		Options: opt,
+	}
 
 	if _, err := collection.Indexes().CreateOne(ctx, index); err != nil {
 		log.Println("Could not create index:", err)
@@ -154,7 +157,8 @@ func ViewCasbinRole(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin_views_casbin_role.html", gin.H{
 			"session_id":   sessionID,
 			"session_name": sessionName,
-			"list":         model})
+			"list":         model,
+		})
 
 	default:
 		//VUE template
@@ -189,7 +193,8 @@ func AddCasbinRole(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin_views_casbin_role_add.html", gin.H{
 			"csrf":         csrf.GetToken(c),
 			"session_id":   sessionID,
-			"session_name": sessionName})
+			"session_name": sessionName,
+		})
 
 	default:
 		//VUE template
@@ -230,7 +235,8 @@ func DeleteCasbinRole(c *gin.Context) {
 	e.RemovePolicy(
 		model.RoleName,
 		model.Path,
-		model.Method)
+		model.Method,
+	)
 
 	_, err := collection.DeleteMany(ctx, filter)
 
@@ -300,7 +306,8 @@ func ApiViewCasbinRole(c *gin.Context) {
 		"csrf":         csrf.GetToken(c),
 		"session_id":   sessionID,
 		"session_name": sessionName,
-		"list":         model})
+		"list":         model,
+	})
 
 }
 
@@ -318,7 +325,8 @@ func ApiAddCasbinRole(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"csrf":         csrf.GetToken(c),
 		"session_id":   sessionID,
-		"session_name": sessionName})
+		"session_name": sessionName,
+	})
 
 }
 
@@ -352,7 +360,8 @@ func ApiDeleteCasbinRole(c *gin.Context) {
 	e.RemovePolicy(
 		model.RoleName,
 		model.Path,
-		model.Method)
+		model.Method,
+	)
 
 	_, err := collection.DeleteMany(ctx, filter)
 
