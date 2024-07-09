@@ -302,6 +302,8 @@ func ApiViewForgotPassword(c *gin.Context) { // Get model if exist
 
 	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c)})
 
+	//ForgotPassword.vue
+
 }
 
 func ApiViewRes_passListPrev(c *gin.Context) { // Get model if exist
@@ -332,4 +334,7 @@ func ApiViewRes_passListPrev(c *gin.Context) { // Get model if exist
 
 	//end MongoDB
 	c.IndentedJSON(http.StatusOK, gin.H{"csrf": csrf.GetToken(c), "url": model.Url})
+
+	//ResetPassword.vue
+
 }
